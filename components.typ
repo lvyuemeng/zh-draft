@@ -25,36 +25,39 @@
 // Returns a dictionary of styled components (label, value, row, kv-line)
 // configured with the provided fonts and dimensions.
 #let field-theme(
-  font-label: auto,
-  font-value: auto,
+  font-label: none,
+  font-value: none,
   size-label: 12pt,
   size-value: 12pt,
-  stroke-width: 0.5pt,
   inset: (x: 0pt, bottom: 2pt),
 ) = {
   // Internal base helper for cell rendering.
-  let cell-base(content, font: auto, size: auto, alignment: left, border: none) = {
+  let cell-base(content, font: none, size: auto, alignment: center, stroke: none) = {
+    // a default cjk character to match the height between cjk and non-cjk character.
+    let strut = box(width: 0pt, hide(text(font: "KaiTi", size: size)[""]))
     rect(
       width: 100%,
       inset: inset,
-      stroke: border,
+      stroke: stroke,
       outset: 0pt,
-      align(alignment, text(font: font, size: size, content)),
+      align(alignment, if font == none { text(size: size, content) + strut } else {
+        text(font: font, size: size, content) + strut
+      }),
     )
   }
 
   // Renders a static field label.
-  let label(content, ..args) = {
+  let label(content, alignment: center, stroke: none, ..args) = {
     let content = text(content, ..args)
-    cell-base(content, font: font-label, size: size-label, alignment: left, border: none)
+    cell-base(content, font: font-label, size: size-label, alignment: alignment, stroke: stroke)
   }
 
   // Renders an input-style value field with a bottom border.
-  let value(content, alignment: center, ..args) = {
-    let border = (bottom: stroke-width + black)
-    let content = text(content, bottom-edge: "descender", ..args)
+  let value(content, alignment: center, stroke: none, ..args) = {
+    let stroke = if stroke == none { (bottom: 0.5pt + black) } else { stroke }
+    // let content = text(content, bottom-edge: "descender", ..args)
 
-    cell-base(content, font: font-value, size: size-value, alignment: alignment, border: border)
+    cell-base(content, font: font-value, size: size-value, alignment: alignment, stroke: stroke)
   }
 
   // Generates a grid row tuple containing a label and a value cell.
@@ -85,19 +88,10 @@
       .flatten()
   }
 
-  // Renders an inline `Key: Value` pair (e.g., for non-grid layout).
-  // let kv-line(key, val, separator: ": ") = {
-  //   par(first-line-indent: 0pt, hanging-indent: 0pt)[
-  //     #text(font: font-label, weight: "bold")[#key#separator]
-  //     #text(font: font-value)[#val]
-  //   ]
-  // }
-
   return (
     label: label,
     value: value,
     row: row,
     rows: rows,
-    // kv-line: kv-line
   )
 }
