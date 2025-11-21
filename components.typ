@@ -47,13 +47,12 @@
   }
 
   // Renders a static field label.
-  let label(content, alignment: center, stroke: none, ..args) = {
-    let content = text(content, ..args)
+  let label(content, alignment: center, stroke: none) = {
     cell-base(content, font: font-label, size: size-label, alignment: alignment, stroke: stroke)
   }
 
   // Renders an input-style value field with a bottom border.
-  let value(content, alignment: center, stroke: none, ..args) = {
+  let value(content, alignment: center, stroke: none) = {
     let stroke = if stroke == none { (bottom: 0.5pt + black) } else { stroke }
     // let content = text(content, bottom-edge: "descender", ..args)
 
