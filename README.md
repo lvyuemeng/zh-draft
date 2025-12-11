@@ -22,6 +22,8 @@ Currently, it's not adaptable on [Typst Universe](https://typst.app/universe/). 
 
 ```shell
 git clone <repo> <path>
+# or
+git submodule add <path> <repo>
 ```
 
 ```typst
